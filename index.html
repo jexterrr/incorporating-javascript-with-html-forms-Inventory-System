@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Inventory System</title>
+        <link
+            rel="stylesheet"
+            href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        />
+    </head>
+    <body>
+        <div class="container mt-5">
+            <h2>Inventory System</h2>
+
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Add Item</h5>
+                            <form id="inventoryForm">
+                                <div class="form-group">
+                                    <label for="itemName">Item:</label>
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="itemName"
+                                        required
+                                    />
+                                </div>
+                                <div class="form-group">
+                                    <label for="itemQuantity">Quantity:</label>
+                                    <input
+                                        type="number"
+                                        class="form-control"
+                                        id="itemQuantity"
+                                        required
+                                    />
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    Add Item
+                                </button>
+
+                                <div
+                                    class="form-check float-right align-items-center"
+                                >
+                                    <input
+                                        type="checkbox"
+                                        class="form-check-input"
+                                        id="hideTableCheckbox"
+                                    />
+                                    <label
+                                        class="form-check-label"
+                                        for="hideTableCheckbox"
+                                        >Hide Table</label
+                                    >
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6" id="inventoryTableContainer">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Inventory</h5>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Item</th>
+                                        <th>Quantity</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="inventoryTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                $('#inventoryForm').submit(function (event) {
+                    event.preventDefault();
+                    var itemName = $('#itemName').val();
+                    var itemQuantity = $('#itemQuantity').val();
+
+                    if (itemName && itemQuantity) {
+                        $('#inventoryTableBody').append(
+                            '<tr><td class="editable item-name">' +
+                                itemName +
+                                '</td><td class="editable item-quantity">' +
+                                itemQuantity +
+                                '</td></tr>'
+                        );
+                        $('#itemName').val('');
+                        $('#itemQuantity').val('');
+                    }
+                });
+
+                $('#inventoryTableBody').on('click', '.editable', function () {
+                    var $cell = $(this);
+                    var text = $cell.text();
+                    $cell.empty();
+                    var $input = $(
+                        '<input type="text" class="form-control" value="' +
+                            text +
+                            '">'
+                    )
+                        .appendTo($cell)
+                        .trigger('focus')
+                        .trigger('select');
+
+                    $input.on('blur', function () {
+                        var newText = $(this).val();
+                        $cell.text(newText);
+                    });
+
+                    $input.on('keypress', function (event) {
+                        if (event.which === 13) {
+                            $(this).trigger('blur');
+                        }
+                    });
+                });
+
+                $('#hideTableCheckbox').change(function () {
+                    if ($(this).is(':checked')) {
+                        $('#inventoryTableContainer').hide();
+                    } else {
+                        $('#inventoryTableContainer').show();
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>
